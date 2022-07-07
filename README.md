@@ -1,10 +1,10 @@
-# <PROJECT_NAME>
+# ape-tx
 
-TODO: Description
+Transact using the command line
 
 ## Dependencies
 
-* [python3](https://www.python.org/downloads) version 3.7 or greater, python3-dev
+* [python3](https://www.python.org/downloads) version 3.7.2 or greater, python3-dev
 
 ## Installation
 
@@ -13,7 +13,7 @@ TODO: Description
 You can install the latest release via [`pip`](https://pypi.org/project/pip/):
 
 ```bash
-pip install <PYPI_NAME>
+pip install ape-tx
 ```
 
 ### via `setuptools`
@@ -21,14 +21,24 @@ pip install <PYPI_NAME>
 You can clone the repository and use [`setuptools`](https://github.com/pypa/setuptools) for the most up-to-date version:
 
 ```bash
-git clone https://github.com/ApeWorX/<PYPI_NAME>.git
-cd <PYPI_NAME>
+git clone https://github.com/unparalleled-js/ape-tx.git
+cd ape-tx
 python3 setup.py install
 ```
 
 ## Quick Usage
 
-TODO: Describe library overview in code
+Deploy contracts:
+
+```bash
+ape tx deploy MyContract arg0 arg1 --sender AccountAlias
+```
+
+View transaction traces:
+
+```bash
+ape tx trace 0x053cba5c12172654d894f66d5670bab6215517a94189a9ffc09bc40a589ec04d
+```
 
 ## Development
 
