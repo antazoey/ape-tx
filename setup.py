@@ -8,6 +8,7 @@ extras_require = {
         "pytest-xdist",  # multi-process runner
         "pytest-cov",  # Coverage analyzer plugin
         "hypothesis>=6.2.0,<7.0",  # Strategy-based fuzzer
+        "ape-vyper",
     ],
     "lint": [
         "black>=21.10b0,<22.0",  # auto-formatter and linter
@@ -54,6 +55,8 @@ setup(
     include_package_data=True,
     install_requires=[
         "importlib-metadata ; python_version<'3.8'",
+        "eth-ape>=0.3.5",
+        "click",  # Use same version as ape
     ],
     python_requires=">=3.7,<4",
     extras_require=extras_require,

@@ -1,6 +1,8 @@
 import click
 from ape.cli import NetworkBoundCommand, ape_cli_context, network_option
 
+from ._utils import deploy_contract
+
 verbose_option = click.option("--verbose", is_flag=True, help="Show more information on the trace.")
 raw_option = click.option("--raw", is_flag=True, help="Show the raw, non-pretty trace.")
 
@@ -15,15 +17,10 @@ def cli():
 @network_option()
 @click.argument("contract")
 @click.argument("arguments", nargs=-1)
-@click.option("--sender", help="An account alias")
+@click.option("--sender", help="Account to send deploy tx")
 def deploy(cli_ctx, network, contract, arguments, sender):
-    _ = network_option  # Needed for NetworkBoundCommand
-    contract_container = cli_ctx.project_manager.get_contract(contract)
-
-    if sender:
-        contract_container.deploy(*arguments, sender=cli_ctx.account_manager.load(sender))
-    else:
-        contract_container.deploy(*arguments)
+    _ = network  # Needed for NetworkBoundCommand
+    deploy_contract(cli_ctx, contract, *arguments, sender=sender)
 
 
 def txn_hash_callback(ctx, param, value):
