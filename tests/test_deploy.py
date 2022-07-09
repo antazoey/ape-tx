@@ -22,13 +22,15 @@ def test_deploy_unknown_sender(runner, cli):
     assert "ERROR: No account with alias 'not-exists'" in result.output
 
 
-def test_deploy(runner, cli):
-    result = runner.invoke(cli, ["deploy", "Test", "--sender", "test"], input="y\n123\n")
+def test_deploy(runner, cli, account_0):
+    result = runner.invoke(cli, ["deploy", "Test", "--sender", account_0.alias], input="y\n123\n")
     assert result.exit_code == 0
 
 
-def test_deploy_with_ctor_args(runner, cli, account):
+def test_deploy_with_ctor_args(runner, cli, account_0):
     result = runner.invoke(
-        cli, ["deploy", "TestWithCtorArgs", account.address, "--sender", "test"], input="y\n123\n"
+        cli,
+        ["deploy", "TestWithCtorArgs", account_0.address, "--sender", account_0.alias],
+        input="y\n123\n",
     )
     assert result.exit_code == 0
