@@ -34,6 +34,18 @@ Deploy contracts:
 ape tx deploy MyContract arg0 arg1 --sender AccountAlias
 ```
 
+Check balances:
+
+```bash
+ape tx bal AccountAlias --network ethereum:mainnet
+```
+
+Transfer money:
+
+```bash
+ape tx transfer --from AccountAlias --to 0x8656bDDC790dA239824eE2eA782d350c80AA2Cf4 --value "1 ETH"
+```
+
 View transaction traces:
 
 ```bash

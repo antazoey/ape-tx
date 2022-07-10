@@ -28,6 +28,11 @@ def config():
 
 
 @pytest.fixture(scope="session")
+def convert():
+    return ape.convert
+
+
+@pytest.fixture(scope="session")
 def networks():
     return ape.networks
 
