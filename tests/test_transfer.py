@@ -18,6 +18,8 @@ def test_transfer_missing_value(cli, runner, account_0, account_1):
 def test_transfer_decimal_value(cli, runner, account_0, account_1, convert):
     value = convert("100 gwei", int)
     result = runner.invoke(
-        cli, ["transfer", "--from", account_0.address, "--to", account_1.address, "--value", str(value)], input="y\n123\n"
+        cli,
+        ["transfer", "--from", account_0.address, "--to", account_1.address, "--value", str(value)],
+        input="y\n123\n",
     )
     assert result.exit_code == 0

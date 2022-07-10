@@ -2,10 +2,7 @@ import click
 from ape import convert
 from ape.cli import NetworkBoundCommand, ape_cli_context, network_option
 
-from ._utils import deploy_contract, get_balance, transfer_money
-
-verbose_option = click.option("--verbose", is_flag=True, help="Show more information on the trace.")
-raw_option = click.option("--raw", is_flag=True, help="Show the raw, non-pretty trace.")
+from ape_tx._utils import deploy_contract, get_balance, trace_transactions, transfer_money
 
 
 @click.group()
@@ -65,22 +62,9 @@ def txn_hash_callback(ctx, param, value):
 @cli.command(cls=NetworkBoundCommand)
 @ape_cli_context()
 @network_option()
-@verbose_option
-@raw_option
+@click.option("--verbose", is_flag=True, help="Show more information on the trace.")
+@click.option("--raw", is_flag=True, help="Show the raw, non-pretty trace.")
 @click.argument("txn_hash", nargs=-1, callback=txn_hash_callback)
 def trace(cli_ctx, network, verbose, raw, txn_hash):
     _ = network  # Needed for NetworkBoundCommand
-    if not txn_hash:
-        return
-
-    for index in range(len(txn_hash)):
-        receipt = cli_ctx.network_manager.provider.get_transaction(txn_hash[index])
-
-        if raw:
-            call_tree = cli_ctx.provider.get_call_tree(receipt.txn_hash)
-            click.echo(repr(call_tree))
-        else:
-            receipt.show_trace(verbose=verbose)
-
-        if index < len(txn_hash) - 1:
-            click.echo()
+    trace_transactions(cli_ctx, txn_hash, raw, verbose)
