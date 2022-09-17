@@ -68,10 +68,10 @@ def get_account(cli_ctx, account_id: str) -> AccountAPI:
 
 def trace_transactions(cli_ctx, txn_hash: List[str], raw: bool, verbose: bool):
     if not txn_hash:
-        return
+        return cli_ctx.abort("No transaction hashes given.")
 
     for index in range(len(txn_hash)):
-        receipt = cli_ctx.network_manager.provider.get_transaction(txn_hash[index])
+        receipt = cli_ctx.provider.get_receipt(txn_hash[index])
 
         if raw:
             call_tree = cli_ctx.provider.get_call_tree(receipt.txn_hash)
