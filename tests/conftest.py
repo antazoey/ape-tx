@@ -180,3 +180,13 @@ def account_0(accounts):
 @pytest.fixture()
 def account_1(accounts):
     return accounts.load(ALIAS_1)
+
+
+@pytest.fixture
+def dev_account(accounts):
+    return accounts.test_accounts[0]
+
+
+@pytest.fixture
+def contract(project, dev_account):
+    return project.Test.deploy(sender=dev_account)

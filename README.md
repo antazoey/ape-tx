@@ -52,6 +52,25 @@ View transaction traces:
 ape tx trace 0x053cba5c12172654d894f66d5670bab6215517a94189a9ffc09bc40a589ec04d
 ```
 
+Make calls:
+
+```bash
+ape tx call \
+   --contract 0x0A56d07a0B8Ba800358DdEEb20eb46a618BFBE27 \
+   --method balanceOf \
+   0x8656bDDC790dA239824eE2eA782d350c80AA2Cf4
+```
+
+Make transactions:
+
+```bash
+ape tx invoke \
+  --contract 0x0A56d07a0B8Ba800358DdEEb20eb46a618BFBE27 \
+  --method transfer \
+  --sender AccountAlias \
+  0x8656bDDC790dA239824eE2eA782d350c80AA2Cf4 123
+```
+
 ## Development
 
 This project is in development and should be considered a beta.

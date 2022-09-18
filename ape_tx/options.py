@@ -1,5 +1,5 @@
+import ape
 import click
-from ape import convert
 
 
 def sender_option(**kwargs):
@@ -18,7 +18,7 @@ def txn_args():
 
 def _value_callback(ctx, param, value):
     if not value.isnumeric():
-        return convert(value, int)
+        return ape.convert(value, int)
 
     return int(value)
 
@@ -45,12 +45,16 @@ def transaction_hash_argument():
     return click.argument("txn_hash", nargs=-1, callback=_txn_hash_callback)
 
 
+def _contract_callback(ctx, param, value):
+    return ape.Contract(value)
+
+
 def contract_option():
-    return click.option("--contract", help="A contract address.")
+    return click.option("--contract", help="A contract address.", callback=_contract_callback)
 
 
 def method_option():
-    return click.option("--method", help="A contract function name.")
+    return click.option("--method", help="A contract function name.", required=True)
 
 
 def pretty_option():
