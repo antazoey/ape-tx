@@ -91,9 +91,7 @@ def call_function(contract_address: str, method_name: str, *arguments) -> Any:
     return _call_contract_method(contract, method_name, *arguments)
 
 
-def invoke_function(
-    sender: str, contract_address: str, method_name: str, *arguments
-) -> ReceiptAPI:
+def invoke_function(sender: str, contract_address: str, method_name: str, *arguments) -> ReceiptAPI:
     contract = ape.Contract(contract_address)
     account = get_account(sender)
     return _call_contract_method(contract, method_name, *arguments, sender=account)
@@ -106,11 +104,10 @@ def _call_contract_method(contract: ContractInstance, method_name: str, *args, *
 
 
 def _fix_args(contract_method: MethodABI, *arguments) -> List:
-    selected_abi = _select_method_abi(contract_method.abis, arguments)
-    converted_arguments = []
+    converted_arguments: List[Any] = []
 
     # The CLI always uses str for ints, fix that here
-    for abi, argument in zip(selected_abi.inputs, arguments):
+    for abi, argument in zip(contract_method.inputs, arguments):
         if "int" in str(abi.type) and not str(abi.type).endswith("]"):
             converted_arguments.append(int(argument))
         elif "int" in str(abi.type) and str(abi.type).endswith("]"):
