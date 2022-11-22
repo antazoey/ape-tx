@@ -56,6 +56,7 @@ Make calls:
 
 ```bash
 ape tx call \
+  --network "ethereum:mainnet:alchemy" \
    --contract 0x0A56d07a0B8Ba800358DdEEb20eb46a618BFBE27 \
    --method balanceOf \
    0x8656bDDC790dA239824eE2eA782d350c80AA2Cf4
@@ -65,6 +66,7 @@ Make transactions:
 
 ```bash
 ape tx invoke \
+  --network "ethereum:mainnet:alchemy" \
   --contract 0x0A56d07a0B8Ba800358DdEEb20eb46a618BFBE27 \
   --method transfer \
   --sender AccountAlias \

@@ -86,13 +86,15 @@ def trace_transactions(txn_hash: List[str], raw: bool, verbose: bool):
             click.echo()
 
 
-def call_function(contract: ContractInstance, method_name: str, *arguments) -> Any:
+def call_function(contract_address: str, method_name: str, *arguments) -> Any:
+    contract = ape.Contract(contract_address)
     return _call_contract_method(contract, method_name, *arguments)
 
 
 def invoke_function(
-    sender: str, contract: ContractInstance, method_name: str, *arguments
+    sender: str, contract_address: str, method_name: str, *arguments
 ) -> ReceiptAPI:
+    contract = ape.Contract(contract_address)
     account = get_account(sender)
     return _call_contract_method(contract, method_name, *arguments, sender=account)
 

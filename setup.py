@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from setuptools import find_packages, setup  # type: ignore
+from setuptools import find_packages, setup
 
 extras_require = {
     "test": [  # `test` GitHub Action jobs uses this
@@ -11,9 +11,10 @@ extras_require = {
         "ape-vyper",
     ],
     "lint": [
-        "black>=22.6.0",  # auto-formatter and linter
-        "mypy>=0.971",  # Static type analyzer
-        "flake8>=4.0.1",  # Style linter
+        "black>=22.10.0",  # auto-formatter and linter
+        "mypy>=0.991",  # Static type analyzer
+        "types-setuptools",  # Needed for mypy typeshed
+        "flake8>=5.0.4",  # Style linter
         "isort>=5.10.1",  # Import sorting linter
     ],
     "release": [  # `release` GitHub Action job uses this
@@ -54,7 +55,7 @@ setup(
     url="https://github.com/unparallaled-js/ape-tx",
     include_package_data=True,
     install_requires=[
-        "eth-ape>=0.5.1,<0.6",
+        "eth-ape>=0.5.5,<0.6",
         "click",  # Use same version as ape
     ],
     python_requires=">=3.8,<3.11",

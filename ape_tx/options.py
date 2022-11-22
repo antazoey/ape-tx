@@ -45,12 +45,8 @@ def transaction_hash_argument():
     return click.argument("txn_hash", nargs=-1, callback=_txn_hash_callback)
 
 
-def _contract_callback(ctx, param, value):
-    return ape.Contract(value)
-
-
 def contract_option():
-    return click.option("--contract", help="A contract address.", callback=_contract_callback)
+    return click.option("--contract", help="A contract address.")
 
 
 def method_option():
