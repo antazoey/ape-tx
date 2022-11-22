@@ -5,6 +5,7 @@ import click
 from ape.api import AccountAPI, ReceiptAPI
 from ape.cli import Abort
 from ape.contracts import ContractContainer, ContractInstance
+from ape.contracts.base import ContractCallHandler, ContractTransactionHandler
 from ape.exceptions import ArgumentsLengthError, SignatureError
 from ethpm_types.abi import MethodABI
 
@@ -103,11 +104,14 @@ def _call_contract_method(contract: ContractInstance, method_name: str, *args, *
     return contract_method(*arguments, **kwargs)
 
 
-def _fix_args(contract_method: MethodABI, *arguments) -> List:
+def _fix_args(
+    method_handler: Union[ContractCallHandler, ContractTransactionHandler], *arguments
+) -> List:
+    selected_abi = _select_method_abi(method_handler.abis, arguments)
     converted_arguments: List[Any] = []
 
     # The CLI always uses str for ints, fix that here
-    for abi, argument in zip(contract_method.inputs, arguments):
+    for abi, argument in zip(selected_abi.inputs, arguments):
         if "int" in str(abi.type) and not str(abi.type).endswith("]"):
             converted_arguments.append(int(argument))
         elif "int" in str(abi.type) and str(abi.type).endswith("]"):

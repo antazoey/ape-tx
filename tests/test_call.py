@@ -50,5 +50,5 @@ def test_call(runner, cli, contract_with_number_set):
             "favorite_number",
         ],
     )
-    assert result.exit_code == 0
+    assert result.exit_code == 0, result.output
     assert result.output == f"{NUMBER_SET}\n"
