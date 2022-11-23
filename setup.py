@@ -1,20 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from setuptools import find_packages, setup  # type: ignore
+from setuptools import find_packages, setup
 
 extras_require = {
     "test": [  # `test` GitHub Action jobs uses this
-        "pytest>=6.0,<7.0",  # Core testing package
+        "pytest>=7.0",  # Core testing package
         "pytest-xdist",  # multi-process runner
         "pytest-cov",  # Coverage analyzer plugin
         "hypothesis>=6.2.0,<7.0",  # Strategy-based fuzzer
         "ape-vyper",
     ],
     "lint": [
-        "black>=21.10b0,<22.0",  # auto-formatter and linter
-        "mypy>=0.910,<1.0",  # Static type analyzer
-        "flake8>=3.8.3,<4.0",  # Style linter
-        "isort>=5.9.3,<6.0",  # Import sorting linter
+        "black>=22.10.0",  # auto-formatter and linter
+        "mypy>=0.991",  # Static type analyzer
+        "types-setuptools",  # Needed for mypy typeshed
+        "flake8>=5.0.4",  # Style linter
+        "isort>=5.10.1",  # Import sorting linter
     ],
     "release": [  # `release` GitHub Action job uses this
         "setuptools",  # Installation tool
@@ -54,11 +55,10 @@ setup(
     url="https://github.com/unparallaled-js/ape-tx",
     include_package_data=True,
     install_requires=[
-        "importlib-metadata ; python_version<'3.8'",
-        "eth-ape>=0.3.5",
+        "eth-ape>=0.5.6,<0.6",
         "click",  # Use same version as ape
     ],
-    python_requires=">=3.7,<4",
+    python_requires=">=3.8,<3.11",
     extras_require=extras_require,
     py_modules=["ape_tx"],
     entry_points={
@@ -72,14 +72,12 @@ setup(
     packages=find_packages(exclude=["tests", "tests.*"]),
     package_data={"ape_tx": ["py.typed"]},
     classifiers=[
-        "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: Apache Software License",
         "Natural Language :: English",
         "Operating System :: MacOS",
         "Operating System :: POSIX",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
