@@ -55,7 +55,7 @@ setup(
     url="https://github.com/unparallaled-js/ape-tx",
     include_package_data=True,
     install_requires=[
-        "eth-ape>=0.5.5,<0.6",
+        "eth-ape>=0.5.6,<0.6",
         "click",  # Use same version as ape
     ],
     python_requires=">=3.8,<3.11",
