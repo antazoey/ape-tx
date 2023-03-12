@@ -12,10 +12,13 @@ extras_require = {
     ],
     "lint": [
         "black>=22.10.0",  # auto-formatter and linter
-        "mypy>=0.991",  # Static type analyzer
+        "mypy>=0.991,<1",  # Static type analyzer
         "types-setuptools",  # Needed for mypy typeshed
         "flake8>=5.0.4",  # Style linter
         "isort>=5.10.1",  # Import sorting linter
+        "mdformat>=0.7.16",  # Auto-formatter for markdown
+        "mdformat-gfm>=0.3.5",  # Needed for formatting GitHub-flavored markdown
+        "mdformat-frontmatter>=0.4.1",  # Needed for frontmatters-style headers in issue templates
     ],
     "release": [  # `release` GitHub Action job uses this
         "setuptools",  # Installation tool
@@ -55,7 +58,7 @@ setup(
     url="https://github.com/unparallaled-js/ape-tx",
     include_package_data=True,
     install_requires=[
-        "eth-ape>=0.5.6,<0.6",
+        "eth-ape>=0.6.5,<0.7",
         "click",  # Use same version as ape
     ],
     python_requires=">=3.8,<3.11",

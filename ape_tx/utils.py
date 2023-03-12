@@ -7,6 +7,7 @@ from ape.cli import Abort
 from ape.contracts import ContractContainer, ContractInstance
 from ape.contracts.base import ContractCallHandler, ContractTransactionHandler
 from ape.exceptions import ArgumentsLengthError, SignatureError
+from ape.types import AddressType
 from ethpm_types.abi import MethodABI
 
 
@@ -27,7 +28,7 @@ def transfer_money(sender: str, receiver: str, value: int):
     sender_account.transfer(receiver, value)
 
 
-def get_balance(account: str, pretty: bool = False):
+def get_balance(account: AddressType, pretty: bool = False):
     # Only load account when its an alias to support getting balances for non-local accounts.
     account = get_account(account).address if not account.startswith("0x") else account
     balance = ape.networks.provider.get_balance(account)
