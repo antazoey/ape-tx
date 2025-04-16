@@ -1,4 +1,4 @@
-# @version ^0.3.3
+# @version ^0.4.0
 
 owner: public(address)
 favorite_number: public(uint256)
@@ -15,7 +15,7 @@ event FriendChange:
     new_address: indexed(address)
 
 
-@external
+@deploy
 def __init__(_owner: address):
     self.owner = _owner
 
