@@ -4,7 +4,7 @@ Transact using the command line
 
 ## Dependencies
 
-- [python3](https://www.python.org/downloads) version 3.8 or greater, python3-dev
+- [python3](https://www.python.org/downloads) version 3.9 or greater, python3-dev
 
 ## Installation
 
@@ -21,7 +21,7 @@ pip install ape-tx
 You can clone the repository and use [`setuptools`](https://github.com/pypa/setuptools) for the most up-to-date version:
 
 ```bash
-git clone https://github.com/unparalleled-js/ape-tx.git
+git clone https://github.com/antazoey/ape-tx.git
 cd ape-tx
 python3 setup.py install
 ```

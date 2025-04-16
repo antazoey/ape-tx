@@ -11,12 +11,12 @@ extras_require = {
         "ape-vyper",
     ],
     "lint": [
-        "black>=22.10.0",  # auto-formatter and linter
-        "mypy>=0.991,<1",  # Static type analyzer
+        "black>=25.1.0",  # auto-formatter and linter
+        "mypy>=1.15.0",  # Static type analyzer
         "types-setuptools",  # Needed for mypy typeshed
-        "flake8>=5.0.4",  # Style linter
+        "flake8>=7.2.0",  # Style linter
         "isort>=5.10.1",  # Import sorting linter
-        "mdformat>=0.7.16",  # Auto-formatter for markdown
+        "mdformat>=0.7.22",  # Auto-formatter for markdown
         "mdformat-gfm>=0.3.5",  # Needed for formatting GitHub-flavored markdown
         "mdformat-frontmatter>=0.4.1",  # Needed for frontmatters-style headers in issue templates
     ],
@@ -58,10 +58,10 @@ setup(
     url="https://github.com/unparallaled-js/ape-tx",
     include_package_data=True,
     install_requires=[
-        "eth-ape>=0.6.5,<0.7",
+        "eth-ape>=0.8.31,<0.9",
         "click",  # Use same version as ape
     ],
-    python_requires=">=3.8,<3.11",
+    python_requires=">=3.9,<4",
     extras_require=extras_require,
     py_modules=["ape_tx"],
     entry_points={
@@ -81,8 +81,10 @@ setup(
         "Operating System :: MacOS",
         "Operating System :: POSIX",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
     ],
 )

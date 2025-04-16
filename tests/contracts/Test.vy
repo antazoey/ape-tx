@@ -16,8 +16,8 @@ event FriendChange:
 
 
 @external
-def __init__():
-    self.owner = msg.sender
+def __init__(owner: address):
+    self.owner = owner
 
 
 @external

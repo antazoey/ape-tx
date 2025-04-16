@@ -1,18 +1,21 @@
-from typing import Any, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 import ape
 import click
-from ape.api import AccountAPI, ReceiptAPI
-from ape.cli import Abort
-from ape.contracts import ContractContainer, ContractInstance
-from ape.contracts.base import ContractCallHandler, ContractTransactionHandler
-from ape.exceptions import ArgumentsLengthError, SignatureError
-from ape.types import AddressType
-from ethpm_types.abi import MethodABI
+from ape.exceptions import Abort, ArgumentsLengthError, SignatureError, TransactionNotFoundError
+
+if TYPE_CHECKING:
+    from ape.api import AccountAPI, ReceiptAPI
+    from ape.contracts import ContractContainer, ContractInstance
+    from ape.contracts.base import ContractCallHandler, ContractTransactionHandler
+    from ape.types import AddressType
+    from ethpm_types.abi import MethodABI
 
 
 def deploy_contract(contract: str, *args, sender: Optional[str] = None):
-    container = get_contract(contract)
+    if not (container := get_contract(contract)):
+        raise Abort(f"No contract found with name '{contract}'.")
+
     if sender:
         account = get_account(sender)
         container.deploy(*args, sender=account)
@@ -28,8 +31,8 @@ def transfer_money(sender: str, receiver: str, value: int):
     sender_account.transfer(receiver, value)
 
 
-def get_balance(account: AddressType, pretty: bool = False):
-    # Only load account when its an alias to support getting balances for non-local accounts.
+def get_balance(account: "AddressType", pretty: bool = False):
+    # Only load account when it's an alias to support getting balances for non-local accounts.
     account = get_account(account).address if not account.startswith("0x") else account
     balance = ape.networks.provider.get_balance(account)
     if not pretty:
@@ -50,14 +53,14 @@ def get_balance(account: AddressType, pretty: bool = False):
     return f"{rounded_value} {symbol}"
 
 
-def get_contract(contract_id: str) -> ContractContainer:
+def get_contract(contract_id: str) -> "ContractContainer":
     try:
         return ape.project.get_contract(contract_id)
     except ValueError as err:
         raise Abort(str(err))
 
 
-def get_account(account_id: str) -> AccountAPI:
+def get_account(account_id: str) -> "AccountAPI":
     if not account_id:
         raise Abort(f"Missing account '{account_id}'.")
 
@@ -67,25 +70,29 @@ def get_account(account_id: str) -> AccountAPI:
         else:
             return ape.accounts.load(account_id)
 
-    except IndexError as err:
+    except (IndexError, KeyError) as err:
         raise Abort(str(err))
 
 
-def trace_transactions(txn_hash: List[str], raw: bool, verbose: bool):
+def trace_transactions(txn_hash: list[str], raw: bool, verbose: bool):
     if not txn_hash:
         raise Abort("No transaction hashes given.")
 
     for index in range(len(txn_hash)):
-        receipt = ape.networks.provider.get_receipt(txn_hash[index])
+        try:
+            receipt = ape.networks.provider.get_receipt(txn_hash[index])
 
-        if raw:
-            call_tree = ape.networks.provider.get_call_tree(receipt.txn_hash)
-            click.echo(repr(call_tree))
-        else:
-            receipt.show_trace(verbose=verbose)
+            if raw:
+                call_tree = ape.networks.provider.get_call_tree(receipt.txn_hash)
+                click.echo(repr(call_tree))
+            else:
+                receipt.show_trace(verbose=verbose)
 
-        if index < len(txn_hash) - 1:
-            click.echo()
+            if index < len(txn_hash) - 1:
+                click.echo()
+
+        except TransactionNotFoundError as err:
+            raise Abort(str(err))
 
 
 def call_function(contract_address: str, method_name: str, *arguments) -> Any:
@@ -93,23 +100,25 @@ def call_function(contract_address: str, method_name: str, *arguments) -> Any:
     return _call_contract_method(contract, method_name, *arguments)
 
 
-def invoke_function(sender: str, contract_address: str, method_name: str, *arguments) -> ReceiptAPI:
+def invoke_function(
+    sender: str, contract_address: str, method_name: str, *arguments
+) -> "ReceiptAPI":
     contract = ape.Contract(contract_address)
     account = get_account(sender)
     return _call_contract_method(contract, method_name, *arguments, sender=account)
 
 
-def _call_contract_method(contract: ContractInstance, method_name: str, *args, **kwargs):
+def _call_contract_method(contract: "ContractInstance", method_name: str, *args, **kwargs):
     contract_method = getattr(contract, method_name)
     arguments = _fix_args(contract_method, *args)
     return contract_method(*arguments, **kwargs)
 
 
 def _fix_args(
-    method_handler: Union[ContractCallHandler, ContractTransactionHandler], *arguments
-) -> List:
+    method_handler: Union["ContractCallHandler", "ContractTransactionHandler"], *arguments
+) -> list:
     selected_abi = _select_method_abi(method_handler.abis, arguments)
-    converted_arguments: List[Any] = []
+    converted_arguments: list[Any] = []
 
     # The CLI always uses str for ints, fix that here
     for abi, argument in zip(selected_abi.inputs, arguments):
@@ -123,7 +132,7 @@ def _fix_args(
     return converted_arguments
 
 
-def _select_method_abi(abis: List[MethodABI], args: Union[Tuple, List]) -> MethodABI:
+def _select_method_abi(abis: list["MethodABI"], args: Union[tuple, list]) -> "MethodABI":
     args = args or []
     selected_abi = None
     for abi in abis:

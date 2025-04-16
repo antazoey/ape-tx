@@ -1,8 +1,7 @@
 import json
 import shutil
 from pathlib import Path
-from tempfile import mkdtemp
-from typing import Dict
+from typing import TYPE_CHECKING
 
 import ape
 import pytest
@@ -10,43 +9,20 @@ from click.testing import CliRunner
 
 from ape_tx._cli import cli as _cli
 
+if TYPE_CHECKING:
+    from ape.api import AccountAPI
+
 # NOTE: Ensure that we don't use local paths for these
-ape.config.DATA_FOLDER = Path(mkdtemp()).resolve()
-PROJECT_FOLDER = Path(mkdtemp()).resolve()
+_DATA_FOLDER_CTX = ape.config.isolate_data_folder(keep="packages")
+DATA_FOLDER = _DATA_FOLDER_CTX.__enter__()
 ALIAS_0 = "test_0"
 ALIAS_1 = "test_1"
 
 
-@pytest.fixture(scope="session")
-def accounts():
-    return ape.accounts
-
-
-@pytest.fixture(scope="session")
-def config():
-    return ape.config
-
-
-@pytest.fixture(scope="session")
-def convert():
-    return ape.convert
-
-
-@pytest.fixture(scope="session")
-def networks():
-    return ape.networks
-
-
-@pytest.fixture(scope="session")
-def project(config):
-    with config.using_project(PROJECT_FOLDER) as project:
-        yield project
-
-
 @pytest.fixture(scope="session", autouse=True)
-def provider(networks):
-    with networks.ethereum.local.use_provider("test") as provider:
-        yield provider
+def clean_temp_data_folder():
+    yield
+    _DATA_FOLDER_CTX.__exit__(None, None, None)
 
 
 @pytest.fixture(scope="session")
@@ -57,6 +33,16 @@ def runner():
 @pytest.fixture(scope="session")
 def cli():
     return _cli
+
+
+@pytest.fixture(scope="session")
+def convert(chain):
+    return chain.conversion_manager.convert
+
+
+@pytest.fixture
+def account_manager(chain):
+    return chain.account_manager
 
 
 @pytest.fixture(scope="session")
@@ -87,7 +73,7 @@ def account_params_1():
 
 def _get_keyfile_params(
     address: str, cipherparams: str, ciphertext: str, salt: str, mac: str, id: str
-) -> Dict:
+) -> dict:
     return {
         "address": address,
         "crypto": {
@@ -110,13 +96,13 @@ def _get_keyfile_params(
 
 
 @pytest.fixture(scope="session")
-def accounts_path(config):
-    path = Path(config.DATA_FOLDER) / "accounts"
+def accounts_path():
+    path = DATA_FOLDER / "accounts"
     path.mkdir(exist_ok=True, parents=True)
 
     yield path
 
-    if path.exists():
+    if path.is_dir():
         shutil.rmtree(path)
 
 
@@ -154,39 +140,42 @@ def account_file_1(account_path_1, account_params_1):
     _clean_account_path(path)
 
 
-def _make_account(path: Path, params: Dict):
+def _make_account(path: Path, params: dict):
     path.write_text(json.dumps(params))
     return path
 
 
 def _clean_account_path(path: Path):
-    if path.exists():
+    if path.is_file():
         path.unlink()
 
 
-@pytest.fixture(autouse=True, scope="session")
-def contracts_folder(project):
-    source_path = Path(__file__).parent / "contracts"
-    destination_path = project.contracts_folder
-    shutil.copytree(source_path, destination_path)
-    return destination_path
+@pytest.fixture()
+def account_0(account_file_0, account_manager, dev_account):
+    _ = account_file_0  # Make sure this runs first.
+    acct = account_manager.load(ALIAS_0)
+    _fund(dev_account, acct)
+    return acct
 
 
 @pytest.fixture()
-def account_0(accounts):
-    return accounts.load(ALIAS_0)
+def account_1(account_file_1, account_manager, dev_account):
+    _ = account_file_1  # Make sure this runs first.
+    acct = account_manager.load(ALIAS_1)
+    _fund(dev_account, acct)
+    return acct
 
 
-@pytest.fixture()
-def account_1(accounts):
-    return accounts.load(ALIAS_1)
+def _fund(funder: "AccountAPI", receiver: "AccountAPI", ratio: float = 0.25):
+    amount_to_send = int(funder.balance * ratio)
+    funder.transfer(receiver, amount_to_send)
 
 
 @pytest.fixture
 def dev_account(accounts):
-    return accounts.test_accounts[0]
+    return accounts[0]
 
 
 @pytest.fixture
-def contract(project, dev_account):
-    return project.Test.deploy(sender=dev_account)
+def contract(project, account_0, dev_account):
+    return project.Test.deploy(account_0, sender=dev_account)

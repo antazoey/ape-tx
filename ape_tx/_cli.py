@@ -1,5 +1,5 @@
 import click
-from ape.cli import NetworkBoundCommand, network_option
+from ape.cli import ConnectedProviderCommand
 
 from ape_tx.options import (
     contract_option,
@@ -28,64 +28,52 @@ def cli():
     """Transaction utilities"""
 
 
-@cli.command(cls=NetworkBoundCommand)
-@network_option()
+@cli.command(cls=ConnectedProviderCommand)
 @click.argument("contract")
 @txn_args()
 @sender_option(help="Account to send deploy tx")
-def deploy(network, contract, arguments, sender):
-    _ = network  # Needed for NetworkBoundCommand
+def deploy(contract, arguments, sender):
     deploy_contract(contract, *arguments, sender=sender)
 
 
-@cli.command(cls=NetworkBoundCommand)
-@network_option()
+@cli.command(cls=ConnectedProviderCommand)
 @sender_option(help="The account to transfer from", required=True)
 @receiver_option(help="The account to receiver the funds", required=True)
 @value_option()
-def transfer(network, sender, receiver, value):
-    _ = network  # Needed for NetworkBoundCommand
+def transfer(sender, receiver, value):
     transfer_money(sender, receiver, value)
 
 
-@cli.command(cls=NetworkBoundCommand)
-@network_option()
+@cli.command(cls=ConnectedProviderCommand)
 @click.argument("account")
 @pretty_option()
-def bal(network, account, pretty):
-    _ = network  # Needed for NetworkBoundCommand
+def bal(account, pretty):
     balance = get_balance(account, pretty=pretty)
     click.echo(balance)
 
 
-@cli.command(cls=NetworkBoundCommand)
+@cli.command(cls=ConnectedProviderCommand)
 @transaction_hash_argument()
-@network_option()
 @verbose_option()
 @raw_option()
-def trace(network, verbose, raw, txn_hash):
-    _ = network  # Needed for NetworkBoundCommand
+def trace(verbose, raw, txn_hash):
     trace_transactions(txn_hash, raw, verbose)
 
 
-@cli.command(cls=NetworkBoundCommand)
-@network_option()
+@cli.command(cls=ConnectedProviderCommand)
 @contract_option()
 @method_option()
 @sender_option(required=True)
 @txn_args()
-def invoke(network, contract, method, sender, arguments):
-    _ = network  # Needed for NetworkBoundCommand
+def invoke(contract, method, sender, arguments):
     receipt = invoke_function(sender, contract, method, *arguments)
     click.echo(receipt)
 
 
-@cli.command(cls=NetworkBoundCommand)
-@network_option()
+@cli.command(cls=ConnectedProviderCommand)
 @contract_option()
 @method_option()
 @txn_args()
-def call(network, contract, method, arguments):
-    _ = network  # Needed for NetworkBoundCommand
+def call(contract, method, arguments):
     result = call_function(contract, method, *arguments)
     click.echo(result)

@@ -1,6 +1,12 @@
 [build-system]
 requires = ["setuptools>=51.1.1", "wheel", "setuptools_scm[toml]>=5.0"]
 
+[tool.ape]
+contracts_folder = "tests/contracts"
+
+[tool.ape.ethereum.local]
+transaction_acceptance_timeout = 3
+
 [tool.mypy]
 exclude = "build/"
 plugins = ["pydantic.mypy"]
@@ -15,11 +21,10 @@ write_to = "ape_tx/version.py"
 
 [tool.black]
 line-length = 100
-target-version = ['py38', 'py39', 'py310']
+target-version = ['py39', 'py310', 'py311', 'py312', 'py313']
 include = '\.pyi?$'
 
 [tool.pytest.ini_options]
-addopts = "-p no:ape_test"
 python_files = "test_*.py"
 testpaths = "tests"
 
