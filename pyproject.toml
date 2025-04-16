@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=51.1.1", "wheel", "setuptools_scm[toml]>=5.0"]
+requires = ["setuptools>=75.0.0", "wheel", "setuptools_scm[toml]>=5.0"]
 
 [tool.ape]
 contracts_folder = "tests/contracts"
@@ -13,6 +13,7 @@ plugins = ["pydantic.mypy"]
 
 [tool.setuptools_scm]
 write_to = "ape_tx/version.py"
+fallback_version = "0.8.999"
 
 # NOTE: you have to use single-quoted strings in TOML for regular expressions.
 # It's the equivalent of r-strings in Python.  Multiline strings are treated as

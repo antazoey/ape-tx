@@ -4,7 +4,7 @@ from setuptools import find_packages, setup
 
 extras_require = {
     "test": [  # `test` GitHub Action jobs uses this
-        "pytest>=7.0",  # Core testing package
+        "pytest",  # Core testing package
         "pytest-xdist",  # multi-process runner
         "pytest-cov",  # Coverage analyzer plugin
         "hypothesis>=6.2.0,<7.0",  # Strategy-based fuzzer
@@ -21,7 +21,7 @@ extras_require = {
         "mdformat-frontmatter>=0.4.1",  # Needed for frontmatters-style headers in issue templates
     ],
     "release": [  # `release` GitHub Action job uses this
-        "setuptools",  # Installation tool
+        "setuptools>=75",  # Installation tool
         "wheel",  # Packaging tool
         "twine",  # Package upload tool
     ],

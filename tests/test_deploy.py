@@ -20,7 +20,9 @@ def test_deploy_missing_sender(runner, cli, dev_account):
 
 def test_deploy_unknown_sender(runner, cli, dev_account):
     result = runner.invoke(
-        cli, ("deploy", "Test", dev_account.address, "--sender", "not-exists"), catch_exceptions=False
+        cli,
+        ("deploy", "Test", dev_account.address, "--sender", "not-exists"),
+        catch_exceptions=False,
     )
     assert result.exit_code == 1
     assert "ERROR: " in result.output
@@ -28,7 +30,9 @@ def test_deploy_unknown_sender(runner, cli, dev_account):
 
 
 def test_deploy(runner, cli, account_0, dev_account):
-    result = runner.invoke(cli, ("deploy", "Test", dev_account.address, "--sender", account_0.alias), input="y\n123\n")
+    result = runner.invoke(
+        cli, ("deploy", "Test", dev_account.address, "--sender", account_0.alias), input="y\n123\n"
+    )
     assert result.exit_code == 0
 
 
